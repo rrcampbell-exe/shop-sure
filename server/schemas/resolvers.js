@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Item, List } = require("../models");
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
 
@@ -6,23 +6,38 @@ const resolvers = {
   Query: {
     me: async (parent, args, context) => {
       if (context.user) {
-        const userData = await User.findOne({ _id: context.user._id })
-          .select('-__v -password')
-    
+        const userData = await User.findOne({ _id: context.user._id }).select(
+          "-__v -password"
+        );
+
         return userData;
       }
-    
-      throw new AuthenticationError('Please log in first.');
+
+      throw new AuthenticationError("Please log in first.");
     },
     // get all users
     users: async () => {
-      return User.find()
-        .select("-__v -password")
+      return User.find().select("-__v -password");
     },
     // get user by username
     user: async (parent, { username }) => {
-      return User.findOne({ username })
-        .select("-__v -password")
+      return User.findOne({ username }).select("-__v -password");
+    },
+    // get item by item name
+    item: async (parent, { name }) => {
+      return Item.findOne({ name });
+    },
+    // get all items
+    items: async () => {
+      return Item.find();
+    },
+    // get list by list name
+    list: async (parent, { name }) => {
+      return List.findOne({ name });
+    },
+    // get all lists
+    lists: async () => {
+      return List.find();
     },
   },
   Mutation: {
@@ -52,6 +67,3 @@ const resolvers = {
 };
 
 module.exports = resolvers;
-
-  
-  
