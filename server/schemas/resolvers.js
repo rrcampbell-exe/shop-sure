@@ -63,6 +63,66 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
+    addItem: async (parent, args, context) => {
+      if (context.user) {
+        const listUpdate = await List.findByIdAndUpdate(
+          { name: context.user._id.savedLists.name },
+          { $push: { name: args.itemData } },
+          { new: true }
+        );
+
+        return listUpdate;
+      }
+
+      throw new AuthenticationError(
+        "You can only add items if you're logged in!"
+      );
+    },
+    removeItem: async (parent, args, context) => {
+      if (context.user) {
+        const listUpdate = await List.findByIdAndUpdate(
+          { name: context.user._id.savedLists.name },
+          { $pull: { name: args.itemData } },
+          { new: true }
+        );
+
+        return listUpdate;
+      }
+
+      throw new AuthenticationError(
+        "You can only remove items if you're logged in!"
+      );
+    },
+    addList: async (parent, args, context) => {
+      if (context.user) {
+        const userUpdate = await User.findByIdAndUpdate(
+          { _id: context.user._id },
+          { $push: { savedLists: args.listData } },
+          { new: true }
+        );
+
+        return userUpdate;
+      }
+
+      throw new AuthenticationError(
+        "You must be logged into create new lists!"
+      );
+    },
+    removeList: async (parent, args, context) => {
+      if (context.user) {
+        const userUpdate = await User.findByIdAndUpdate(
+          { _id: context.user._id },
+          { $pull: { savedLists: args.listData } },
+          { new: true }
+        );
+
+        return userUpdate;
+      }
+
+      throw new AuthenticationError(
+        "You must be logged into delete lists!"
+      );
+    },
   },
 };
 
