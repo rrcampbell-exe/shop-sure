@@ -14,7 +14,7 @@ const typeDefs = gql`
   type Item {
     _id: ID
     name: String!
-    quantity: Number
+    quantity: Int
     department: String
   }
 
@@ -37,14 +37,14 @@ const typeDefs = gql`
   input ItemInput {
     _id: ID
     name: String!
-    quantity: Number
+    quantity: Int
     department: String
   }
   
   input ListInput {
     _id: ID
     name: String!
-    savedItems: [Item]
+    savedItems: [ItemInput]
   }
 
   type Mutation {
