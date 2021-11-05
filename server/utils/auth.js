@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 
-const secret = "8675309didyoueverhearthetragedyofdarthplagueisthewisePLEASEputYOURownSECREThere";
-const expiration = "24h";
+// set token secret and expiration date
+const secret = "holycowthissecretissogreatitsperfectforagroceryrelatedapp45372389";
+const expiration = "2h";
 
 module.exports = {
   signToken: function ({ username, email, _id }) {
@@ -9,33 +10,34 @@ module.exports = {
 
     return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
   },
-  authMiddleware: function({ req }) {
-    // permits token to be sent via any of the below
+  // function for our authenticated routes
+  authMiddleware: function ({ req }) {
+
+    // permits token to be sent via req.body, req.query, or headers
     let token = req.body.token || req.query.token || req.headers.authorization;
-  
-    // separate "Bearer" from the value of the token itself
+
+    // separate Bearer from <tokenvalue>
     if (req.headers.authorization) {
       token = token
-        .split(' ')
-        .pop()
-        .trim();
+      .split(" ")
+      .pop()
+      .trim();
     }
-  
-    // if no token has been provided, return request object as is
+
+    // if no token present, return request object as is
     if (!token) {
       return req;
     }
-  
+
     try {
       // decode and attach user data to request object
       const { data } = jwt.verify(token, secret, { maxAge: expiration });
       req.user = data;
     } catch {
-      console.log('This token is invalid. You shall not pass.');
+      console.log("This token is invalid");
     }
-  
+
     // return updated request object
     return req;
-  }
+  },
 };
-  

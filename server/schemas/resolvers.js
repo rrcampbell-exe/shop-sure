@@ -65,7 +65,7 @@ const resolvers = {
     },
     addItem: async (parent, args, context) => {
       if (context.user) {
-        const listUpdate = await List.findByIdAndUpdate(
+        const listUpdate = await User.findByIdAndUpdate(
           { name: context.user._id.savedLists.name },
           { $push: { name: args.itemData } },
           { new: true }
@@ -80,7 +80,7 @@ const resolvers = {
     },
     removeItem: async (parent, args, context) => {
       if (context.user) {
-        const listUpdate = await List.findByIdAndUpdate(
+        const listUpdate = await User.findByIdAndUpdate(
           { name: context.user._id.savedLists.name },
           { $pull: { name: args.itemData } },
           { new: true }
