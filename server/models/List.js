@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const itemSchema = require('./Item')
+const itemSchema = require('./Item').schema
 
 const listSchema = new Schema(
   {
@@ -19,4 +19,6 @@ const listSchema = new Schema(
   }
 );
 
-module.exports = listSchema;  
+const List = model("List", listSchema)
+
+module.exports = List;  
