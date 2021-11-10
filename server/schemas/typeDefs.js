@@ -8,20 +8,15 @@ const typeDefs = gql`
     _id: ID
     username: String
     email: String
-    savedLists: [List]
+    currentList: [Item]
+    savedItems: [Item]
   }
 
   type Item {
-    _id: ID
+    _id: ID!
     name: String!
     quantity: Int
     department: String
-  }
-
-  type List {
-    _id: ID
-    name: String!
-    savedItems: [Item]
   }
 
   type Query {
@@ -30,8 +25,6 @@ const typeDefs = gql`
     user(username: String!): User
     item(name: String!): Item
     items: [Item]
-    list(name: String!): List
-    lists: [List]
   }
 
   input ItemInput {
@@ -40,20 +33,14 @@ const typeDefs = gql`
     quantity: Int
     department: String
   }
-  
-  input ListInput {
-    _id: ID
-    name: String!
-    savedItems: [ItemInput]
-  }
 
   type Mutation {
     login(email: String!, password: String!): Auth
     addUser(username: String!, email: String!, password: String!): Auth
     addItem(itemData: ItemInput!): User
+    createItem(itemData: ItemInput!): User
     removeItem(name: String!): User
-    addList(listData: ListInput!): User 
-    removeList(name: String!): User 
+    deleteItem(name: String!): User
   }
 
   type Auth {

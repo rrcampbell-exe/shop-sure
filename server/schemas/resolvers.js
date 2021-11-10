@@ -1,4 +1,4 @@
-const { User, Item, List } = require("../models");
+const { User, Item } = require("../models");
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
 
@@ -31,14 +31,6 @@ const resolvers = {
     items: async () => {
       return Item.find();
     },
-    // get list by list name
-    list: async (parent, { name }) => {
-      return List.findOne({ name });
-    },
-    // get all lists
-    lists: async () => {
-      return List.find();
-    },
   },
   Mutation: {
     addUser: async (parent, args) => {
@@ -63,41 +55,41 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    addItem: async (parent, args, context) => {
+    createItem: async (parent, args, context) => {
       if (context.user) {
-        const listUpdate = await List.findByIdAndUpdate(
-          { _id },
-          { $push: args.itemData },
+        const userUpdate = await User.findByIdAndUpdate(
+          { _id: context.user._id },
+          { $push: { savedItems: args.itemData } },
           { new: true }
         );
 
-        return listUpdate;
+        return userUpdate;
       }
 
       throw new AuthenticationError(
-        "You can only add items if you're logged in!"
+        "You must be logged into create new items!"
+      );
+    },
+    addItem: async (parent, args, context) => {
+      if (context.user) {
+        const userUpdate = await User.findByIdAndUpdate(
+          { _id: context.user._id },
+          { $push: { currentList: args.itemData } },
+          { new: true }
+        );
+
+        return userUpdate;
+      }
+
+      throw new AuthenticationError(
+        "You must be logged into add items to your list!"
       );
     },
     removeItem: async (parent, args, context) => {
       if (context.user) {
-        const listUpdate = await User.findByIdAndUpdate(
-          { name: context.user._id.savedLists.name },
-          { $pull: { name: args.itemData } },
-          { new: true }
-        );
-
-        return listUpdate;
-      }
-
-      throw new AuthenticationError(
-        "You can only remove items if you're logged in!"
-      );
-    },
-    addList: async (parent, args, context) => {
-      if (context.user) {
         const userUpdate = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $push: { savedLists: args.listData } },
+          { $pull: { currentList: args.itemData } },
           { new: true }
         );
 
@@ -105,14 +97,14 @@ const resolvers = {
       }
 
       throw new AuthenticationError(
-        "You must be logged into create new lists!"
+        "You must be logged into remove items from your list!"
       );
     },
-    removeList: async (parent, args, context) => {
+    deleteItem: async (parent, args, context) => {
       if (context.user) {
         const userUpdate = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $pull: { savedLists: args.listData } },
+          { $pull: { savedItems: args.itemData } },
           { new: true }
         );
 
@@ -120,7 +112,7 @@ const resolvers = {
       }
 
       throw new AuthenticationError(
-        "You must be logged into delete lists!"
+        "You must be logged into delete items!"
       );
     },
   },

@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const listSchema = require('./List').schema
+const itemSchema = require('./Item').schema
 
 const userSchema = new Schema(
   {
@@ -23,7 +23,8 @@ const userSchema = new Schema(
       required: true,
       minlength: 8
     },
-    savedLists: [listSchema],
+    savedItems: [itemSchema],
+    currentList: [itemSchema],
   },
   {
     toJSON: {
