@@ -67,7 +67,7 @@ const resolvers = {
       }
 
       throw new AuthenticationError(
-        "You must be logged into create new items!"
+        "You must be logged in to create new items!"
       );
     },
     addItem: async (parent, args, context) => {
@@ -82,7 +82,7 @@ const resolvers = {
       }
 
       throw new AuthenticationError(
-        "You must be logged into add items to your list!"
+        "You must be logged in to add items to your list!"
       );
     },
     removeItem: async (parent, args, context) => {
@@ -97,7 +97,7 @@ const resolvers = {
       }
 
       throw new AuthenticationError(
-        "You must be logged into remove items from your list!"
+        "You must be logged in to remove items from your list!"
       );
     },
     deleteItem: async (parent, args, context) => {
@@ -112,9 +112,23 @@ const resolvers = {
       }
 
       throw new AuthenticationError(
-        "You must be logged into delete items!"
+        "You must be logged in to delete items!"
       );
     },
+    updateItem: async (parent, args, context) => {
+      console.log(args)
+      if (context.user) {
+        const item = await Item.updateOne({ _id: args._id }, args)
+
+        console.log(item)
+
+        return item
+      }
+
+      throw new AuthenticationError(
+        "You must be logged in to update an item!"
+      );
+    }
   },
 };
 

@@ -40,7 +40,8 @@ const typeDefs = gql`
     addItem(itemData: ItemInput!): User
     createItem(itemData: ItemInput!): User
     removeItem(itemData: ItemInput!): User
-    deleteItem(name: String!): User
+    deleteItem(itemData: ItemInput!): User
+    updateItem(_id: ID!, name: String!, quantity: Int!, department: String!): Item
   }
 
   type Auth {
