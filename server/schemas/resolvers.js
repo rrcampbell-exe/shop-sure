@@ -23,9 +23,9 @@ const resolvers = {
     user: async (parent, { username }) => {
       return User.findOne({ username }).select("-__v -password");
     },
-    // get item by item name
-    item: async (parent, { name }) => {
-      return Item.findOne({ name });
+    // get item by item id
+    item: async (parent, { _id }) => {
+      return Item.findOne({ _id });
     },
     // get all items
     items: async () => {
